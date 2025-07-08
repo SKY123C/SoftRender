@@ -1,1 +1,5 @@
+cmake_minimum_required(VERSION 3.12...3.26)
 project(SoftRender)
+set(RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+
+add_executable(main WIN32 main.cpp)
