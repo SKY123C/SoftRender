@@ -42,6 +42,11 @@ void Paint::Triangle(int x1, int y1, int x2, int y2, int x3, int y3, TGAImage &i
     }
 }
 
+void Paint::getPixelByCamera(Camera &camera)
+{
+    
+}
+
 bool Paint::checkPixelInTriangle(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3)
 {
     // 高斯面积公式
