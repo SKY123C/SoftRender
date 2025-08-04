@@ -38,9 +38,14 @@ int main(int argc, char** argv) {
         7,1,5,
         5,1,3
     };
-
+    std::vector<TriangleData> triangles;
+    for (int i = 0; i < 36; i += 3) {
+        triangles.emplace_back(TriangleData(&vertex[indices[i] * 3]));
+    }
     Paint paint;
-    paint.Triangle(ax, ay, bx, by, cx, cy, framebuffer, red);
+    Camera camera;
+    paint.drawPixelByCamera(camera, triangles, width, height, framebuffer, red);
+    //paint.Triangle(ax, ay, bx, by, cx, cy, framebuffer, red);
     // paint.drawLine(ax, ay, bx, by, framebuffer, blue);
     // paint.drawLine(cx, cy, bx, by, framebuffer, green);
     // paint.drawLine(cx, cy, ax, ay, framebuffer, yellow);

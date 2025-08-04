@@ -42,7 +42,7 @@ void Paint::Triangle(int x1, int y1, int x2, int y2, int x3, int y3, TGAImage &i
     }
 }
 
-void Paint::getPixelByCamera(Camera &camera)
+void Paint::drawPixelByCamera(Camera& camera, std::vector<TriangleData>& triangles, int width, int height, TGAImage& image, TGAColor color)
 {
     
 }

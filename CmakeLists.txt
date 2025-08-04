@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.12...3.26)
 project(SoftRender)
 set(RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 include_directories(${PROJECT_SOURCE_DIR}/include)
+
+#set(EIGEN3_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0)
+#set(Eigen3_DIR ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0/cmake)
+
+#set(CMAKE_MODULE_PATH ${EIGEN3_INCLUDE_DIR}/cmake)
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIRS})
+
 # 使用共享库并正确设置导出
 add_library(tgaimage SHARED ${PROJECT_SOURCE_DIR}/src/tgaimage.cpp)
 target_compile_definitions(tgaimage PRIVATE TGAIMAGE_EXPORTS)
@@ -9,6 +17,9 @@ target_compile_definitions(tgaimage PRIVATE TGAIMAGE_EXPORTS)
 add_library(draw SHARED ${PROJECT_SOURCE_DIR}/src/draw.cpp)
 target_compile_definitions(draw PRIVATE DRAW_EXPORTS)
 add_executable(main main.cpp)
-target_link_libraries(draw tgaimage)
+target_link_libraries(draw tgaimage Eigen3::Eigen)
 
 target_link_libraries(main tgaimage draw)
+
+
+
