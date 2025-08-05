@@ -40,9 +40,16 @@ int main(int argc, char** argv) {
     };
     std::vector<TriangleData> triangles;
     for (int i = 0; i < 36; i += 3) {
-        triangles.emplace_back(TriangleData(&vertex[indices[i] * 3]));
+        TriangleData triangle;
+        int currentIndex = indices[i] -1 ;
+        int secondIndex = indices[i + 1] - 1;
+        int thirdIndex = indices[i + 2] - 1;
+        triangle.addPoint(vertex[currentIndex * 3], vertex[currentIndex * 3 + 1], vertex[currentIndex * 3 + 2]);
+        triangle.addPoint(vertex[secondIndex * 3], vertex[secondIndex * 3 + 1], vertex[secondIndex * 3 + 2]);
+        triangle.addPoint(vertex[thirdIndex * 3], vertex[thirdIndex * 3 + 1], vertex[thirdIndex * 3 + 2]);
+        triangles.push_back(triangle);
     }
-    Paint paint;
+    Paint paint(width, height);
     Camera camera;
     paint.drawPixelByCamera(camera, triangles, width, height, framebuffer, red);
     //paint.Triangle(ax, ay, bx, by, cx, cy, framebuffer, red);
@@ -54,7 +61,6 @@ int main(int argc, char** argv) {
     // framebuffer.set(ax, ay, white);
     // framebuffer.set(bx, by, white);
     // framebuffer.set(cx, cy, white);
-
     framebuffer.write_tga_file("framebuffer.tga");
     return 0;
 }

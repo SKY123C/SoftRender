@@ -1,5 +1,6 @@
 #include "draw.h"
 #include <cmath>
+#include <iostream>
 
 void Paint::drawLine(int ax, int ay, int bx, int by, TGAImage &image, TGAColor color)
 {
@@ -44,7 +45,46 @@ void Paint::Triangle(int x1, int y1, int x2, int y2, int x3, int y3, TGAImage &i
 
 void Paint::drawPixelByCamera(Camera& camera, std::vector<TriangleData>& triangles, int width, int height, TGAImage& image, TGAColor color)
 {
-    
+    Eigen::Matrix<float, 4, 4> viewportMatrix;
+    viewportMatrix <<
+        width / 2.0f, 0, 0, width / 2.0f,
+        0, height / 2.0f, 0, height / 2.0f,
+        0, 0, 1.0f, 1.0f,
+        0, 0, 0, 1.0f
+    ;
+    Eigen::Matrix<float, 4, 4> viewM = camera.getViewMatrix();
+    for (auto& triangle : triangles) {
+        std::cout<<triangle.pointArray.size() << std::endl;
+        for (const auto& point : triangle.pointArray) {
+            Eigen::Matrix<float,4,1> worldPoint(point.x(), point.y(), point.z(), 1.0f);
+            Eigen::Matrix<float,4,1> pointInCameraSpace = viewM * worldPoint;
+            Eigen::Matrix<float,4,1> cameraPoint = camera.getProjectionMatrix(pointInCameraSpace) * pointInCameraSpace;
+            // Perspective divide
+            cameraPoint = cameraPoint / cameraPoint.w();
+            Eigen::Matrix<float, 4, 1> a = viewportMatrix * cameraPoint;
+  
+            triangle.pointArrayInScreenSpace.push_back(Eigen::Vector3d(a.x(), a.y(), a.z()));
+            //image.set(a.x(), a.y(), color);
+        }
+        Triangle(triangle.pointArrayInScreenSpace[0].x(), triangle.pointArrayInScreenSpace[0].y(),
+                 triangle.pointArrayInScreenSpace[1].x(), triangle.pointArrayInScreenSpace[1].y(),
+                 triangle.pointArrayInScreenSpace[2].x(), triangle.pointArrayInScreenSpace[2].y(),
+                 image, color);
+
+    }
+}
+
+void Paint::test()
+{
+
+    Eigen::Matrix<float, 4, 4> viewM;
+    viewM << 1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1, -5,
+             0, 0, 0, 1;
+    Eigen::Matrix<float, 4, 1> worldPoint(0,0,0, 1);
+    Eigen::Matrix<float, 4, 1> newPoint = viewM * worldPoint;
+    std::cout << "Transformed Point: " << newPoint.transpose() << std::endl;
 }
 
 bool Paint::checkPixelInTriangle(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3)
