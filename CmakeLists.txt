@@ -3,10 +3,8 @@ project(SoftRender)
 set(RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-#set(EIGEN3_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0)
-#set(Eigen3_DIR ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0/cmake)
-
-#set(CMAKE_MODULE_PATH ${EIGEN3_INCLUDE_DIR}/cmake)
+set(EIGEN3_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/ThirdParty/eigen-3.4.0/cmake)
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIRS})
 
