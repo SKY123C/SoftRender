@@ -84,36 +84,45 @@ public:
         return rotationMatrix * translationMatrix;
     }
 
-    Eigen::Matrix<float, 4, 4> getProjectionMatrix(Eigen::Matrix<float,4,1>& inPointMatrix)
+    Eigen::Matrix<float, 4, 4> getProjectionMatrix()
     {
         Eigen::Matrix<float, 4, 1> out;
         float tan = std::tan(fov / 2.0);
-        float top = nearClipPlane * tan;
-        float bottom = -top;
-        float right = aspect * nearClipPlane * tan;
-        float left = -right;
-        double projection[16] = {0};
+        // float top = nearClipPlane * tan;
+        // float bottom = -top;
+        // float right = aspect * nearClipPlane * tan;
+        // float left = -right;
+        float right = nearClipPlane * tan;
+        float top = right / aspect;
         Eigen::Matrix<float, 4, 4> perspToOrthoMatrix;
-        perspToOrthoMatrix <<
-            nearClipPlane, 0.0f, 0.0f, 0.0f,
-            0.0f, nearClipPlane, 0.0f, 0.0f,
-            0.0f, 0.0f, farClipPlane + nearClipPlane, -farClipPlane * nearClipPlane,
-            0.0f, 0.0f, 1.0f, 0.0f;
-        Eigen::Matrix<float, 4, 4> orthoMatrixT;
-        orthoMatrixT <<
-            1,0,0, - (left + right) / 2.0f,
-            0,1,0, - (top + bottom) / 2.0f,
-            0,0,1, - (farClipPlane + nearClipPlane) / 2.0f,
-            0,0,0, 1.0f;
-        Eigen::Matrix<float, 4, 4> orthoMatrixS;
-        orthoMatrixS <<
-            2.0f / (right - left), 0, 0, 0,
-            0, 2.0f / (top - bottom), 0, 0,
-            0, 0, 2.0f / (nearClipPlane - farClipPlane), 0,
-            0, 0, 0, 1.0f
-        ;
+        // perspToOrthoMatrix <<
+        //     nearClipPlane, 0.0f, 0.0f, 0.0f,
+        //     0.0f, nearClipPlane, 0.0f, 0.0f,
+        //     0.0f, 0.0f, farClipPlane + nearClipPlane, -farClipPlane * nearClipPlane,
+        //     0.0f, 0.0f, -1.0f, 0.0f;
+        // Eigen::Matrix<float, 4, 4> orthoMatrixT;
+        // orthoMatrixT <<
+        //     1,0,0, - (left + right) / 2.0f,
+        //     0,1,0, - (top + bottom) / 2.0f,
+        //     0,0,1, - (farClipPlane + nearClipPlane) / 2.0f,
+        //     0,0,0, 1.0f;
+        // Eigen::Matrix<float, 4, 4> orthoMatrixS;
+        // orthoMatrixS <<
+        //     2.0f / (right - left), 0, 0, 0,
+        //     0, 2.0f / (top - bottom), 0, 0,
+        //     0, 0, 2.0f / (nearClipPlane - farClipPlane), 0,
+        //     0, 0, 0, 1.0f
+        // ;
         //out = worldPointMatrix * getViewMatrix() * perspToOrthoMatrix * orthoMatrixT * orthoMatrixS;
-        return orthoMatrixS * orthoMatrixT * perspToOrthoMatrix;
+        
+        Eigen::Matrix<float, 4, 4> perspMatrix;
+        perspMatrix <<
+            nearClipPlane/right, 0.0f, 0.0f, 0.0f,
+            0.0f, nearClipPlane/top, 0.0f, 0.0f,
+            0.0f, 0.0f, (farClipPlane + nearClipPlane) / (farClipPlane - nearClipPlane), (2 * farClipPlane * nearClipPlane) / (nearClipPlane - farClipPlane),
+            0.0f, 0.0f, -1.0f, 0.0f
+        ;
+        return perspMatrix;
     }
 
 
@@ -121,12 +130,13 @@ public:
     double nearClipPlane = 0.100;
     double farClipPlane = 10000.0;
     float focalLength = 30;
-    float fov = 60.0 * M_PI / 180.0; // field of view in degrees
+    // maya is horizonal fov
+    float fov = 70.84 * M_PI / 180.0; // field of view in degrees
     float aspect = 16.0f / 9.0f; // width / height
     //double position[3] = {1.698,14.182,27.176};
     //double rotation[3] = {-22.2 * M_PI / 180.0, 2.8 * M_PI / 180.0, 0}; // pitch, yaw, roll
-    double rotation[3] = {340 * M_PI / 180.0, 25.2 * M_PI / 180.0, 0 * M_PI / 180.0}; // pitch, yaw, roll
-    double position[3] = {2.163,2.227,2.178};
+    double rotation[3] = {347.08 * M_PI / 180.0, 38 * M_PI / 180.0, 0 * M_PI / 180.0}; // pitch, yaw, roll
+    double position[3] = {6.441,0.645,6.734};
 };
 
 class DRAW_API Paint

@@ -49,8 +49,8 @@ void Paint::drawPixelByCamera(Camera& camera, std::vector<TriangleData>& triangl
     viewportMatrix <<
         width / 2.0f, 0, 0, width / 2.0f,
         0, height / 2.0f, 0, height / 2.0f,
-        0, 0, 1.0f, 1.0f,
-        0, 0, 0, 1.0f
+        0, 0, 1.0f, 0,
+        0, 0, 0, 0
     ;
     Eigen::Matrix<float, 4, 4> viewM = camera.getViewMatrix();
     for (auto& triangle : triangles) {
@@ -58,7 +58,7 @@ void Paint::drawPixelByCamera(Camera& camera, std::vector<TriangleData>& triangl
         for (const auto& point : triangle.pointArray) {
             Eigen::Matrix<float,4,1> worldPoint(point.x(), point.y(), point.z(), 1.0f);
             Eigen::Matrix<float,4,1> pointInCameraSpace = viewM * worldPoint;
-            Eigen::Matrix<float,4,1> cameraPoint = camera.getProjectionMatrix(pointInCameraSpace) * pointInCameraSpace;
+            Eigen::Matrix<float,4,1> cameraPoint = camera.getProjectionMatrix() * pointInCameraSpace;
             // Perspective divide
             cameraPoint = cameraPoint / cameraPoint.w();
             Eigen::Matrix<float, 4, 1> a = viewportMatrix * cameraPoint;
